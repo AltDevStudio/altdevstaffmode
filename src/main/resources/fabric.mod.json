@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "altstaffmod",
+  "version": "${version}",
+  "name": "Alt Staff Mode",
+  "description": "Удобства для модерации: авто-подпись бана (Вопросы? ВК), быстрый мут кликом по чату, статистика отыгранного времени и выданных наказаний.",
+  "authors": [
+    "AltDevStudio"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/altstaffmod/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "studio.altdev.staffmode.StaffMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
