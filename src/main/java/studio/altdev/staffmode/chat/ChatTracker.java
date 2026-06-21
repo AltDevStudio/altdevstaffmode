@@ -1,17 +1,13 @@
 package studio.altdev.staffmode.chat;
 
-import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import studio.altdev.staffmode.StaffMod;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +16,9 @@ import java.util.regex.Pattern;
  * Обрабатывает входящие сообщения чата:
  *  - делает сообщение кликабельным (клик подставляет /mute Ник в строку ввода);
  *  - считает выданные мутом/баны по сообщениям-подтверждениям сервера.
+ *
+ * Подписанный player-чат менять нельзя (нет MODIFY_CHAT), поэтому работаем по
+ * системным (game) сообщениям — на большинстве серверов чат форматируется именно так.
  */
 public final class ChatTracker {
 
@@ -29,18 +28,7 @@ public final class ChatTracker {
     private static String cachedNickRegex;
 
     public static void register() {
-        // Player-чат: ник известен из GameProfile отправителя.
-        ClientReceiveMessageEvents.MODIFY_CHAT.register(ChatTracker::onChat);
-        // Системные (game) сообщения: ник вытаскиваем регуляркой, плюс статистика.
         ClientReceiveMessageEvents.MODIFY_GAME.register(ChatTracker::onGame);
-    }
-
-    private static Text onChat(Text message, SignedMessage signedMessage, GameProfile sender,
-                              MessageType.Parameters params, Instant receptionTimestamp) {
-        trackStats(message.getString());
-
-        String nick = sender != null ? sender.getName() : null;
-        return makeMuteClickable(message, nick);
     }
 
     private static Text onGame(Text message, boolean overlay) {
@@ -48,7 +36,7 @@ public final class ChatTracker {
         String text = message.getString();
         trackStats(text);
 
-        if (!StaffMod.config.clickToMuteOnGameMessages) {
+        if (!StaffMod.config.clickToMuteEnabled || !StaffMod.config.clickToMuteOnGameMessages) {
             return message;
         }
         String nick = extractNick(text);
@@ -58,7 +46,7 @@ public final class ChatTracker {
     // ---- Клик-мут ----
 
     private static Text makeMuteClickable(Text message, String nick) {
-        if (!StaffMod.config.clickToMuteEnabled || nick == null || nick.isBlank()) {
+        if (nick == null || nick.isBlank()) {
             return message;
         }
         final String command = StaffMod.config.muteCommandTemplate.replace("{nick}", nick);
@@ -119,6 +107,6 @@ public final class ChatTracker {
     private static String ownName() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player == null) return null;
-        return client.player.getGameProfile().getName();
+        return client.player.getGameProfile().name();
     }
 }

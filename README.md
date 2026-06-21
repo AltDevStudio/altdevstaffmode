@@ -79,6 +79,7 @@
 
 - Перехват и модификация исходящих команд — через `ClientSendMessageEvents.ALLOW_COMMAND`
   (оригинальная команда отменяется, отправляется модифицированная). Mixin'ы не используются.
-- Клик-мут — через `ClientReceiveMessageEvents.MODIFY_CHAT` / `MODIFY_GAME`:
-  сообщению добавляется `ClickEvent.SuggestCommand`.
+- Клик-мут — через `ClientReceiveMessageEvents.MODIFY_GAME` (подписанный player-чат
+  менять нельзя): сообщению добавляется `ClickEvent.SuggestCommand`. Ник берётся
+  регуляркой `gameMessageNickRegex`.
 - Время копится в `ClientTickEvents` и сохраняется периодически и при выходе.

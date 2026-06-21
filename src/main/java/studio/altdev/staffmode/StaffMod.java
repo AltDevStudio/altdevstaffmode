@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import studio.altdev.staffmode.chat.ChatTracker;
 import studio.altdev.staffmode.config.StaffConfig;
@@ -18,6 +19,9 @@ import studio.altdev.staffmode.stats.StatsManager;
 public class StaffMod implements ClientModInitializer {
 
     public static final String MOD_ID = "altstaffmod";
+
+    private static final KeyBinding.Category MENU_CATEGORY =
+            KeyBinding.Category.create(Identifier.of(MOD_ID, "general"));
 
     public static StaffConfig config;
     public static StatsManager stats;
@@ -37,7 +41,7 @@ public class StaffMod implements ClientModInitializer {
                 "key.altstaffmod.menu",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_RIGHT_SHIFT,
-                "key.categories.altstaffmod"
+                MENU_CATEGORY
         ));
 
         // Открытие меню + накопление времени
