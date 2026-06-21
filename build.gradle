@@ -1,6 +1,6 @@
 plugins {
     // Подставь версию Loom, поддерживающую целевую версию MC (см. https://fabricmc.net/develop/).
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
 }
 
